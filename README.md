@@ -1,33 +1,42 @@
 # Ghosthunters
 
-> **Vision:** Build a 3D Action RPG Shooter one milestone at a time using **HTML, CSS, JavaScript, and Babylon.js**.
+> A first-person 3D Action RPG Shooter built step by step using HTML, CSS, JavaScript, and Babylon.js.
 
-## Goals
-- Keep the project simple and beginner-friendly.
-- Add one feature at a time.
-- Always keep the game playable.
-- Build clean, reusable code.
+# Vision
 
-## Tech Stack
-- HTML
-- CSS
-- JavaScript (ES6 Modules)
+Ghosthunters is designed like a commercial game while remaining beginner-friendly to build. Every milestone ends with a playable game before the next feature is added.
+
+## Core Pillars
+
+- First-Person Shooter (FPS)
+- Action RPG progression
+- Large areas to explore
+- Mission-based gameplay
+- Weapon upgrades
+- Loot and inventory
+- Cosmetics (weapon skins, outfits, emotes)
+- Expandable architecture
+
+# Technology
+
+- HTML5
+- CSS3
+- JavaScript (ES6)
 - Babylon.js
 
-## Simple Project Structure
+No frameworks or build tools are required at the beginning.
 
-```text
+# Project Structure
+
+```
 Ghosthunters/
 │
 ├── index.html
 ├── style.css
-├── main.js
-├── game.js
-├── player.js
-├── enemy.js
-├── weapon.js
-├── world.js
-├── ui.js
+├── main.js      # Starts the game
+├── game.js      # Creates the Babylon scene
+├── player.js    # FPS controller
+├── world.js     # World creation
 └── assets/
     ├── models/
     ├── textures/
@@ -35,96 +44,132 @@ Ghosthunters/
     └── ui/
 ```
 
-## Coding Standards
-- Use `const` and `let`, never `var`.
-- One responsibility per file.
-- Keep functions small.
-- Use camelCase for variables/functions.
-- Use PascalCase for classes.
-- Write comments explaining **why**, not **what**.
-- Refactor only when needed.
-- Test after every feature.
+# Coding Standards
 
-## Core Gameplay
+- Keep files focused on one responsibility.
+- Use const/let instead of var.
+- camelCase for variables and functions.
+- PascalCase for classes.
+- Prefer reusable functions.
+- Keep code readable over clever.
+- Add one feature at a time.
+- Test after every milestone.
+- Refactor only when necessary.
+
+# Player Controls
+
+WASD - Move
+
+Mouse - Look
+
+Left Click - Shoot
+
+Right Click - Aim
+
+Shift - Sprint
+
+Space - Jump
+
+R - Reload
+
+E - Interact
+
+F - Melee
+
+Tab - Inventory
+
+Esc - Pause
+
+# Gameplay Loop
+
 1. Accept a mission.
-2. Explore a 3D area.
-3. Fight enemies.
+2. Explore an area.
+3. Defeat enemies.
 4. Collect loot.
-5. Earn XP and coins.
+5. Gain XP and coins.
 6. Upgrade weapons.
-7. Unlock new areas and harder missions.
+7. Unlock new missions and regions.
 
-## RPG Features
-- Player level and XP
-- Weapon upgrades
-- Inventory
-- Loot
-- Coins
+# RPG Systems
+
+- Player level
+- XP
 - Skills
-- Cosmetic outfits
-- Weapon skins
-- Emotes
+- Inventory
+- Weapon upgrades
+- Loot
+- Currency
+- Cosmetic customization
 
-## World
-Planned areas:
+# World
+
+Planned regions:
+
 - Training Base
 - Desert Outpost
-- City
-- Forest
+- City District
+- Forest Facility
 - Snow Mountains
 - Harbor
-- Factory
-- Secret Lab
+- Industrial Zone
+- Secret Research Lab
 
-## Mission Types
-- Eliminate enemies
+# Mission Types
+
+- Elimination
 - Rescue
+- Defense
 - Escort
-- Defend
 - Capture
-- Boss battle
 - Exploration
+- Boss Battle
 
-## Development Roadmap
+# Development Roadmap
 
-### Milestone 1 – Foundation
-- Babylon.js scene
-- Camera
-- Lighting
-- Ground
+## Milestone 1 - Foundation
+- Babylon.js setup
+- FPS camera
 - Player movement
+- Jump
+- Sprint
+- Ground and lighting
 
-### Milestone 2 – Combat
+## Milestone 2 - Combat
 - Shooting
+- Weapon system
 - Enemy AI
 - Health
 - Damage
-- Death
+- Enemy death
 
-### Milestone 3 – RPG
+## Milestone 3 - RPG
 - XP
 - Levels
 - Inventory
-- Weapon upgrades
 - Loot
+- Weapon upgrades
+- Save system
 
-### Milestone 4 – Missions
-- Mission system
+## Milestone 4 - Missions
+- Mission board
+- Objectives
 - Rewards
 - Progress tracking
 
-### Milestone 5 – World Expansion
-- Multiple maps
+## Milestone 5 - World
+- Multiple explorable areas
 - NPCs
-- Secrets
 - Collectibles
+- Side missions
+- Bosses
 
-### Milestone 6 – Polish
-- Better UI
-- Audio
-- Effects
-- Optimization
-- Future multiplayer-ready architecture
+## Milestone 6 - Polish
+- UI improvements
+- Sound
+- Visual effects
+- Performance optimization
+- Architecture ready for future multiplayer
 
-## Development Philosophy
-Build slowly, build cleanly, and finish each milestone before starting the next. Every milestone should produce a fun, playable version of Ghosthunters.
+# Development Philosophy
+
+Build slowly. Build cleanly. Keep the game playable at all times. Every new feature should extend the existing systems instead of replacing them.
