@@ -2,9 +2,9 @@
 
 > A first-person 3D Action RPG Shooter built step by step using HTML, CSS, JavaScript, and Babylon.js.
 
-# Vision
+## Vision
 
-Ghosthunters is designed like a commercial game while remaining beginner-friendly to build. Every milestone ends with a playable game before the next feature is added.
+Ghosthunters is a first-person shooter with RPG progression, missions, exploration and weapon customization. The project is intentionally developed one feature at a time so it always remains playable.
 
 ## Core Pillars
 
@@ -17,31 +17,111 @@ Ghosthunters is designed like a commercial game while remaining beginner-friendl
 - Cosmetics (weapon skins, outfits, emotes)
 - Expandable architecture
 
+
+## Design Goals
+
+- Keep the code beginner-friendly.
+- Build one feature at a time.
+- Test every milestone.
+- Keep the project playable after every change.
+- Expand only when needed.
+
 # Technology
 
 - HTML5
 - CSS3
-- JavaScript (ES6)
+- JavaScript (no frameworks)
 - Babylon.js
 
-No frameworks or build tools are required at the beginning.
+## JavaScript Philosophy
+
+This project **does not use ES modules (`import` / `export`)**.
+
+Reason:
+- The game should run by simply opening `index.html`.
+- No local web server is required.
+- JavaScript files are loaded with normal `<script>` tags.
 
 # Project Structure
 
-```
+```text
 Ghosthunters/
 │
-├── index.html
-├── style.css
-├── main.js      # Starts the game
-├── game.js      # Creates the Babylon scene
-├── player.js    # FPS controller
-├── world.js     # World creation
+├── index.html        # Loads Babylon.js and all scripts
+├── style.css         # Global styles
+│
+├── main.js           # Starts the game
+├── game.js           # Creates and manages the scene
+├── player.js         # Player and FPS camera
+├── world.js          # World creation
+│
 └── assets/
     ├── models/
     ├── textures/
     ├── sounds/
     └── ui/
+```
+
+## File Responsibilities
+
+### index.html
+- Game canvas
+- Loads Babylon.js
+- Loads project JavaScript files
+
+### style.css
+- Fullscreen layout
+- Canvas styling
+
+### main.js
+- Create Babylon engine
+- Start the game
+- Render loop
+- Window resize
+
+### game.js
+- Create scene
+- Create lighting
+- Create player
+- Create world
+- Manage high-level game setup
+
+### player.js
+Current:
+- FPS camera
+
+Future:
+- Movement
+- Sprint
+- Jump
+- Shooting
+- Health
+- Inventory
+
+### world.js
+Current:
+- Ground
+
+Future:
+- Buildings
+- Trees
+- Roads
+- Props
+- Mission locations
+
+## File Flow
+
+```text
+index.html
+    │
+    ▼
+main.js
+    │
+    ▼
+game.js
+  │      │
+  ▼      ▼
+world.js player.js
 ```
 
 # Coding Standards
@@ -58,27 +138,17 @@ Ghosthunters/
 
 # Player Controls
 
-WASD - Move
-
-Mouse - Look
-
-Left Click - Shoot
-
-Right Click - Aim
-
-Shift - Sprint
-
-Space - Jump
-
-R - Reload
-
-E - Interact
-
-F - Melee
-
-Tab - Inventory
-
-Esc - Pause
+- W A S D - Move
+- Mouse - Look
+- Left Click - Fire
+- Right Click - Aim
+- Shift - Sprint
+- Space - Jump
+- R - Reload
+- E - Interact
+- F - Melee
+- Tab - Inventory
+- Esc - Pause
 
 # Gameplay Loop
 
@@ -100,6 +170,15 @@ Esc - Pause
 - Loot
 - Currency
 - Cosmetic customization
+
+# Game Design Rules
+
+- Fun comes before realism.
+- Simplicity over complexity.
+- Build one feature at a time.
+- Finish features before starting new ones.
+- Avoid unnecessary dependencies.
+- Every new system must improve gameplay.
 
 # World
 
@@ -123,7 +202,6 @@ Planned regions:
 - Capture
 - Exploration
 - Boss Battle
-
 # Development Roadmap
 
 ## Milestone 1 - Foundation
@@ -173,3 +251,22 @@ Planned regions:
 # Development Philosophy
 
 Build slowly. Build cleanly. Keep the game playable at all times. Every new feature should extend the existing systems instead of replacing them.
+
+## Development Rules
+
+- One feature at a time.
+- One small change at a time.
+- Keep files focused on one responsibility.
+- Use `const` and `let`.
+- Avoid unnecessary complexity.
+- Only create new files when they are actually needed.
+- Never rewrite working systems without a good reason.
+
+Future save data:
+
+- Player
+- Weapons
+- Inventory
+- XP
+- Missions
+- Settings
