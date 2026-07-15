@@ -57,7 +57,7 @@ function createPlayer(scene, canvas) {
     const muzzleFlash = BABYLON.MeshBuilder.CreateSphere(
         'flash',
         {
-            diameter: 0.8,
+            diameter: 0.15,
             segments: 16,
         },
         scene,
@@ -76,6 +76,7 @@ function createPlayer(scene, canvas) {
     muzzleFlash.isVisible = false;
 
     let recoil = 0;
+    let weaponBobTime = 0;
 
     // -------------------------
     // Keyboard Input
@@ -162,6 +163,21 @@ function createPlayer(scene, canvas) {
             moveVelocity.z *= Math.max(0, 1 - deceleration * deltaTime);
         }
 
+        // -------------------------
+        // Weapon Bob
+        // -------------------------
+
+        if (moveVelocity.length() > 0.01) {
+            weaponBobTime += deltaTime * 10;
+
+            weapon.position.y = -0.3 + Math.sin(weaponBobTime) * 0.02;
+
+            weapon.position.x = 0.35 + Math.cos(weaponBobTime * 0.5) * 0.02;
+        } else {
+            weapon.position.y = -0.3;
+            weapon.position.x = 0.35;
+        }
+
         // Move player
         camera.cameraDirection.addInPlace(moveVelocity.scale(deltaTime));
 
@@ -232,7 +248,7 @@ function createPlayer(scene, canvas) {
 
         const hit = scene.pickWithRay(ray);
         muzzleFlash.isVisible = true;
-        recoil = -0.05;
+        recoil = -0.08;
 
         setTimeout(() => {
             muzzleFlash.isVisible = false;
