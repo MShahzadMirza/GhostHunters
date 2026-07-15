@@ -24,6 +24,57 @@ function createPlayer(scene, canvas) {
 
     // Mouse look
     camera.attachControl(canvas, false);
+    // -------------------------
+    // Weapon (Prototype)
+    // -------------------------
+
+    const weapon = BABYLON.MeshBuilder.CreateBox(
+        'weapon',
+        {
+            width: 0.25,
+            height: 0.18,
+            depth: 0.6,
+        },
+        scene,
+    );
+
+    const weaponMaterial = new BABYLON.StandardMaterial('weaponMat', scene);
+
+    weaponMaterial.diffuseColor = new BABYLON.Color3(0.15, 0.15, 0.15);
+
+    weapon.material = weaponMaterial;
+
+    // Parent weapon to camera
+    weapon.parent = camera;
+
+    // Position relative to camera
+    weapon.position = new BABYLON.Vector3(0.35, -0.3, 0.75);
+    const weaponDefaultPosition = weapon.position.clone();
+
+    // Slight rotation
+    weapon.rotation = new BABYLON.Vector3(0.15, Math.PI, 0);
+
+    const muzzleFlash = BABYLON.MeshBuilder.CreateSphere(
+        'flash',
+        {
+            diameter: 0.12,
+        },
+        scene,
+    );
+
+    const flashMaterial = new BABYLON.StandardMaterial('flashMat', scene);
+
+    flashMaterial.emissiveColor = new BABYLON.Color3(1, 0.8, 0);
+
+    muzzleFlash.material = flashMaterial;
+
+    muzzleFlash.parent = weapon;
+
+    muzzleFlash.position = new BABYLON.Vector3(0, 0, 0.35);
+
+    muzzleFlash.isVisible = false;
+
+    let recoil = 0;
 
     // -------------------------
     // Keyboard Input
@@ -61,8 +112,6 @@ function createPlayer(scene, canvas) {
     scene.onBeforeRenderObservable.add(() => {
         const deltaTime = scene.getEngine().getDeltaTime() / 1000;
 
-        const speed = keys['shift'] ? sprintSpeed : walkSpeed;
-
         const forward = camera.getDirection(BABYLON.Axis.Z);
         const right = camera.getDirection(BABYLON.Axis.X);
 
@@ -91,13 +140,13 @@ function createPlayer(scene, canvas) {
             direction.addInPlace(right);
         }
 
-        const targetSpeed = keys['shift'] ? sprintSpeed : walkSpeed;
+        const moveSpeed = keys['shift'] ? sprintSpeed : walkSpeed;
 
         let targetVelocity = BABYLON.Vector3.Zero();
 
         if (direction.length() > 0) {
             direction.normalize();
-            targetVelocity = direction.scale(targetSpeed);
+            targetVelocity = direction.scale(moveSpeed);
         }
 
         // Smooth acceleration
@@ -133,6 +182,14 @@ function createPlayer(scene, canvas) {
 
             isGrounded = true;
         }
+
+        // -------------------------
+        // Weapon Recoil
+        // -------------------------
+
+        recoil *= 0.85;
+
+        weapon.position.y = weaponDefaultPosition.y + recoil;
     });
 
     // -------------------------
@@ -152,37 +209,6 @@ function createPlayer(scene, canvas) {
     document.addEventListener('pointerlockchange', () => {
         if (document.pointerLockElement === canvas) {
             camera.attachControl(canvas, false);
-            // -------------------------
-            // Weapon (Prototype)
-            // -------------------------
-
-            const weapon = BABYLON.MeshBuilder.CreateBox(
-                'weapon',
-                {
-                    width: 0.25,
-                    height: 0.18,
-                    depth: 0.6,
-                },
-                scene,
-            );
-
-            const weaponMaterial = new BABYLON.StandardMaterial(
-                'weaponMat',
-                scene,
-            );
-
-            weaponMaterial.diffuseColor = new BABYLON.Color3(0.15, 0.15, 0.15);
-
-            weapon.material = weaponMaterial;
-
-            // Parent weapon to camera
-            weapon.parent = camera;
-
-            // Position relative to camera
-            weapon.position = new BABYLON.Vector3(0.35, -0.3, 0.75);
-
-            // Slight rotation
-            weapon.rotation = new BABYLON.Vector3(0.15, Math.PI, 0);
         } else {
             camera.detachControl();
 
@@ -204,6 +230,12 @@ function createPlayer(scene, canvas) {
         const ray = camera.getForwardRay(1000);
 
         const hit = scene.pickWithRay(ray);
+        muzzleFlash.isVisible = true;
+        recoil = -0.05;
+
+        setTimeout(() => {
+            muzzleFlash.isVisible = false;
+        }, 40);
 
         if (!hit.hit) return;
 
