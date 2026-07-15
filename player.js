@@ -207,14 +207,18 @@ function createPlayer(scene, canvas) {
 
         if (!hit.hit) return;
 
-        console.log('Hit:', hit.pickedMesh.name);
+        const mesh = hit.pickedMesh;
 
-        if (hit.pickedMesh.name === 'target') {
-            hit.pickedMesh.material.diffuseColor = new BABYLON.Color3(
-                Math.random(),
-                Math.random(),
-                Math.random(),
-            );
+        console.log('Hit:', mesh.name);
+
+        if (mesh.name === 'target') {
+            mesh.metadata.health -= 25;
+
+            console.log('Health:', mesh.metadata.health);
+
+            if (mesh.metadata.health <= 0) {
+                mesh.dispose();
+            }
         }
     }
 

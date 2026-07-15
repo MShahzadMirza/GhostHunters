@@ -172,5 +172,14 @@ function createWorld(scene) {
         target.position = new BABYLON.Vector3(-15 + i * 5, 1.5, 25);
 
         target.material = targetMaterial;
+
+        // Health
+        target.metadata = {
+            health: 100,
+        };
+
+        target.position = new BABYLON.Vector3(-15 + i * 5, 1.5, 25);
+
+        target.material = targetMaterial;
     }
 }
