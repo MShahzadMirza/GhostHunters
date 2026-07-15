@@ -190,5 +190,33 @@ function createPlayer(scene, canvas) {
         }
     });
 
+    // -------------------------
+    // Shooting
+    // -------------------------
+
+    window.addEventListener('mousedown', (event) => {
+        if (event.button !== 0) return;
+
+        shoot();
+    });
+
+    function shoot() {
+        const ray = camera.getForwardRay(1000);
+
+        const hit = scene.pickWithRay(ray);
+
+        if (!hit.hit) return;
+
+        console.log('Hit:', hit.pickedMesh.name);
+
+        if (hit.pickedMesh.name === 'target') {
+            hit.pickedMesh.material.diffuseColor = new BABYLON.Color3(
+                Math.random(),
+                Math.random(),
+                Math.random(),
+            );
+        }
+    }
+
     return camera;
 }

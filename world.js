@@ -150,4 +150,27 @@ function createWorld(scene) {
 
         building.checkCollisions = true;
     }
+
+    // ==========================
+    // Target Dummies
+    // ==========================
+
+    const targetMaterial = new BABYLON.StandardMaterial('targetMat', scene);
+    targetMaterial.diffuseColor = new BABYLON.Color3(1, 0.2, 0.2);
+
+    for (let i = 0; i < 8; i++) {
+        const target = BABYLON.MeshBuilder.CreateBox(
+            'target',
+            {
+                width: 2,
+                height: 3,
+                depth: 1,
+            },
+            scene,
+        );
+
+        target.position = new BABYLON.Vector3(-15 + i * 5, 1.5, 25);
+
+        target.material = targetMaterial;
+    }
 }
