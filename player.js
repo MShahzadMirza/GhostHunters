@@ -60,8 +60,6 @@ function createPlayer(scene, canvas) {
 
     scene.onBeforeRenderObservable.add(() => {
         const deltaTime = scene.getEngine().getDeltaTime() / 1000;
-        const walkSpeed = 0.08;
-        const sprintSpeed = 0.3;
 
         const speed = keys['shift'] ? sprintSpeed : walkSpeed;
 
@@ -115,7 +113,7 @@ function createPlayer(scene, canvas) {
         }
 
         // Move player
-        camera.cameraDirection.addInPlace(moveVelocity);
+        camera.cameraDirection.addInPlace(moveVelocity.scale(deltaTime));
 
         // Jump
         if (keys[' '] && isGrounded) {
