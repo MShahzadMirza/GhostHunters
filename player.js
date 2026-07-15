@@ -1,50 +1,91 @@
 function createPlayer(scene, canvas) {
-
     const camera = new BABYLON.UniversalCamera(
-        "player",
+        'player',
         new BABYLON.Vector3(0, 2, -5),
-        scene
+        scene,
     );
 
     scene.activeCamera = camera;
 
+    // Camera settings
     camera.angularSensibility = 3000;
-    camera.speed = 0.35;
+    camera.speed = 0; // Disable Babylon movement
 
-    // WASD
-    camera.keysUp = [87];
-    camera.keysDown = [83];
-    camera.keysLeft = [65];
-    camera.keysRight = [68];
+    // Disable Babylon keyboard controls
+    camera.keysUp = [];
+    camera.keysDown = [];
+    camera.keysLeft = [];
+    camera.keysRight = [];
 
+    // Mouse look
     camera.attachControl(canvas, false);
 
-    const overlay = document.getElementById("overlay");
+    // -------------------------
+    // Keyboard Input
+    // -------------------------
 
-    function startGame() {
+    const keys = {};
 
-        overlay.style.display = "none";
+    window.addEventListener('keydown', (e) => {
+        keys[e.key.toLowerCase()] = true;
+    });
 
-        canvas.requestPointerLock();
+    window.addEventListener('keyup', (e) => {
+        keys[e.key.toLowerCase()] = false;
+    });
 
-    }
+    // -------------------------
+    // Player Movement
+    // -------------------------
 
-    overlay.addEventListener("click", startGame);
+    scene.onBeforeRenderObservable.add(() => {
+        const walkSpeed = 0.15;
+        const sprintSpeed = 0.3;
 
-    document.addEventListener("pointerlockchange", () => {
+        const speed = keys['shift'] ? sprintSpeed : walkSpeed;
 
-        if (document.pointerLockElement === canvas) {
+        const forward = camera.getDirection(BABYLON.Axis.Z);
+        const right = camera.getDirection(BABYLON.Axis.X);
 
-            camera.attachControl(canvas);
-
-        } else {
-
-            camera.detachControl();
-
-            overlay.style.display = "flex";
-
+        if (keys['w']) {
+            camera.position.addInPlace(forward.scale(speed));
         }
 
+        if (keys['s']) {
+            camera.position.addInPlace(forward.scale(-speed));
+        }
+
+        if (keys['a']) {
+            camera.position.addInPlace(right.scale(-speed));
+        }
+
+        if (keys['d']) {
+            camera.position.addInPlace(right.scale(speed));
+        }
+    });
+
+    // -------------------------
+    // Overlay / Pointer Lock
+    // -------------------------
+
+    const overlay = document.getElementById('overlay');
+
+    function startGame() {
+        overlay.style.display = 'none';
+
+        canvas.requestPointerLock();
+    }
+
+    overlay.addEventListener('click', startGame);
+
+    document.addEventListener('pointerlockchange', () => {
+        if (document.pointerLockElement === canvas) {
+            camera.attachControl(canvas, false);
+        } else {
+            camera.detachControl();
+
+            overlay.style.display = 'flex';
+        }
     });
 
     return camera;
