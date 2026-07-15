@@ -57,7 +57,8 @@ function createPlayer(scene, canvas) {
     const muzzleFlash = BABYLON.MeshBuilder.CreateSphere(
         'flash',
         {
-            diameter: 0.12,
+            diameter: 0.8,
+            segments: 16,
         },
         scene,
     );
@@ -70,7 +71,7 @@ function createPlayer(scene, canvas) {
 
     muzzleFlash.parent = weapon;
 
-    muzzleFlash.position = new BABYLON.Vector3(0, 0, 0.35);
+    muzzleFlash.position = new BABYLON.Vector3(0, 0, -0.6);
 
     muzzleFlash.isVisible = false;
 
