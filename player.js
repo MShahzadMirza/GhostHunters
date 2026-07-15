@@ -152,6 +152,37 @@ function createPlayer(scene, canvas) {
     document.addEventListener('pointerlockchange', () => {
         if (document.pointerLockElement === canvas) {
             camera.attachControl(canvas, false);
+            // -------------------------
+            // Weapon (Prototype)
+            // -------------------------
+
+            const weapon = BABYLON.MeshBuilder.CreateBox(
+                'weapon',
+                {
+                    width: 0.25,
+                    height: 0.18,
+                    depth: 0.6,
+                },
+                scene,
+            );
+
+            const weaponMaterial = new BABYLON.StandardMaterial(
+                'weaponMat',
+                scene,
+            );
+
+            weaponMaterial.diffuseColor = new BABYLON.Color3(0.15, 0.15, 0.15);
+
+            weapon.material = weaponMaterial;
+
+            // Parent weapon to camera
+            weapon.parent = camera;
+
+            // Position relative to camera
+            weapon.position = new BABYLON.Vector3(0.35, -0.3, 0.75);
+
+            // Slight rotation
+            weapon.rotation = new BABYLON.Vector3(0.15, Math.PI, 0);
         } else {
             camera.detachControl();
 
