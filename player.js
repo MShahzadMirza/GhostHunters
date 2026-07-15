@@ -38,11 +38,14 @@ function createPlayer(scene, canvas) {
     // Player Movement
     // -------------------------
 
-    // -------------------------
-    // Player Movement
-    // -------------------------
-
     let velocityY = 0;
+    let isGrounded = true;
+
+    const jumpForce = 0.35;
+    const walkSpeed = 0.15;
+    const sprintSpeed = 0.3;
+
+    const speed = keys['shift'] ? sprintSpeed : walkSpeed;
 
     const gravity = -0.015;
     const groundHeight = 2;
@@ -79,6 +82,12 @@ function createPlayer(scene, canvas) {
             camera.position.addInPlace(right.scale(speed));
         }
 
+        // Jump
+        if (keys[' '] && isGrounded) {
+            velocityY = jumpForce;
+            isGrounded = false;
+        }
+
         // Gravity
         velocityY += gravity;
         camera.position.y += velocityY;
@@ -86,7 +95,10 @@ function createPlayer(scene, canvas) {
         // Ground collision
         if (camera.position.y <= groundHeight) {
             camera.position.y = groundHeight;
+
             velocityY = 0;
+
+            isGrounded = true;
         }
     });
 
