@@ -46,8 +46,8 @@ function createPlayer(scene, canvas) {
     let velocityY = 0;
     let moveVelocity = BABYLON.Vector3.Zero();
 
-    const walkSpeed = 5; // meters per second
-    const sprintSpeed = 9; // meters per second
+    const walkSpeed = 1.2; // meters per second
+    const sprintSpeed = 3; // meters per second
 
     const acceleration = 18;
     const deceleration = 14;
