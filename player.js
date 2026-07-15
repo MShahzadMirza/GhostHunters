@@ -38,6 +38,15 @@ function createPlayer(scene, canvas) {
     // Player Movement
     // -------------------------
 
+    // -------------------------
+    // Player Movement
+    // -------------------------
+
+    let velocityY = 0;
+
+    const gravity = -0.015;
+    const groundHeight = 2;
+
     scene.onBeforeRenderObservable.add(() => {
         const walkSpeed = 0.15;
         const sprintSpeed = 0.3;
@@ -46,6 +55,13 @@ function createPlayer(scene, canvas) {
 
         const forward = camera.getDirection(BABYLON.Axis.Z);
         const right = camera.getDirection(BABYLON.Axis.X);
+
+        // Keep movement horizontal
+        forward.y = 0;
+        right.y = 0;
+
+        forward.normalize();
+        right.normalize();
 
         if (keys['w']) {
             camera.position.addInPlace(forward.scale(speed));
@@ -61,6 +77,16 @@ function createPlayer(scene, canvas) {
 
         if (keys['d']) {
             camera.position.addInPlace(right.scale(speed));
+        }
+
+        // Gravity
+        velocityY += gravity;
+        camera.position.y += velocityY;
+
+        // Ground collision
+        if (camera.position.y <= groundHeight) {
+            camera.position.y = groundHeight;
+            velocityY = 0;
         }
     });
 
