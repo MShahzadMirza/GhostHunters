@@ -7,6 +7,11 @@ function createPlayer(scene, canvas) {
 
     scene.activeCamera = camera;
 
+    // Enable collisions
+    camera.checkCollisions = true;
+    camera.applyGravity = false;
+    camera.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
+
     // Camera settings
     camera.angularSensibility = 3000;
     camera.speed = 0; // Disable Babylon movement
@@ -39,24 +44,23 @@ function createPlayer(scene, canvas) {
     // -------------------------
 
     let velocityY = 0;
-    let moveVelocity = new BABYLON.Vector3(0, 0, 0);
+    let moveVelocity = BABYLON.Vector3.Zero();
 
-    const acceleration = 0.04;
-    const friction = 0.85;
+    const walkSpeed = 5; // meters per second
+    const sprintSpeed = 9; // meters per second
+
+    const acceleration = 18;
+    const deceleration = 14;
 
     let isGrounded = true;
 
     const jumpForce = 0.35;
-    const walkSpeed = 0.15;
-    const sprintSpeed = 0.3;
-
-    const speed = keys['shift'] ? sprintSpeed : walkSpeed;
-
     const gravity = -0.015;
     const groundHeight = 2;
 
     scene.onBeforeRenderObservable.add(() => {
-        const walkSpeed = 0.15;
+        const deltaTime = scene.getEngine().getDeltaTime() / 1000;
+        const walkSpeed = 0.08;
         const sprintSpeed = 0.3;
 
         const speed = keys['shift'] ? sprintSpeed : walkSpeed;
@@ -89,33 +93,29 @@ function createPlayer(scene, canvas) {
             direction.addInPlace(right);
         }
 
+        const targetSpeed = keys['shift'] ? sprintSpeed : walkSpeed;
+
+        let targetVelocity = BABYLON.Vector3.Zero();
+
         if (direction.length() > 0) {
             direction.normalize();
-
-            moveVelocity.x += direction.x * acceleration;
-            moveVelocity.z += direction.z * acceleration;
+            targetVelocity = direction.scale(targetSpeed);
         }
 
-        // Apply friction
-        moveVelocity.x *= friction;
-        moveVelocity.z *= friction;
+        // Smooth acceleration
+        moveVelocity.x +=
+            (targetVelocity.x - moveVelocity.x) * acceleration * deltaTime;
+        moveVelocity.z +=
+            (targetVelocity.z - moveVelocity.z) * acceleration * deltaTime;
 
-        // Limit speed
-        // Limit speed
-        const horizontalSpeed = Math.sqrt(
-            moveVelocity.x * moveVelocity.x + moveVelocity.z * moveVelocity.z,
-        );
-
-        const maxSpeed = keys['shift'] ? sprintSpeed : walkSpeed;
-
-        if (horizontalSpeed > maxSpeed) {
-            moveVelocity.x = (moveVelocity.x / horizontalSpeed) * maxSpeed;
-            moveVelocity.z = (moveVelocity.z / horizontalSpeed) * maxSpeed;
+        // Smooth deceleration
+        if (direction.length() === 0) {
+            moveVelocity.x *= Math.max(0, 1 - deceleration * deltaTime);
+            moveVelocity.z *= Math.max(0, 1 - deceleration * deltaTime);
         }
 
         // Move player
-        camera.position.x += moveVelocity.x;
-        camera.position.z += moveVelocity.z;
+        camera.cameraDirection.addInPlace(moveVelocity);
 
         // Jump
         if (keys[' '] && isGrounded) {
