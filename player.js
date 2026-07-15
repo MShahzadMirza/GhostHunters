@@ -1,6 +1,5 @@
 function createPlayer(scene, canvas) {
 
-    // Create FPS camera
     const camera = new BABYLON.UniversalCamera(
         "player",
         new BABYLON.Vector3(0, 2, -5),
@@ -9,24 +8,44 @@ function createPlayer(scene, canvas) {
 
     scene.activeCamera = camera;
 
-    // Mouse sensitivity
     camera.angularSensibility = 3000;
-
-    // Movement speed
     camera.speed = 0.35;
 
-    // Enable WASD
-    camera.keysUp = [87];       // W
-    camera.keysDown = [83];     // S
-    camera.keysLeft = [65];     // A
-    camera.keysRight = [68];    // D
-
-    // Click to lock mouse
-    canvas.addEventListener("click", () => {
-        canvas.requestPointerLock();
-    });
+    // WASD
+    camera.keysUp = [87];
+    camera.keysDown = [83];
+    camera.keysLeft = [65];
+    camera.keysRight = [68];
 
     camera.attachControl(canvas, false);
+
+    const overlay = document.getElementById("overlay");
+
+    function startGame() {
+
+        overlay.style.display = "none";
+
+        canvas.requestPointerLock();
+
+    }
+
+    overlay.addEventListener("click", startGame);
+
+    document.addEventListener("pointerlockchange", () => {
+
+        if (document.pointerLockElement === canvas) {
+
+            camera.attachControl(canvas);
+
+        } else {
+
+            camera.detachControl();
+
+            overlay.style.display = "flex";
+
+        }
+
+    });
 
     return camera;
 }
