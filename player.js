@@ -39,6 +39,11 @@ function createPlayer(scene, canvas) {
     // -------------------------
 
     let velocityY = 0;
+    let moveVelocity = new BABYLON.Vector3(0, 0, 0);
+
+    const acceleration = 0.04;
+    const friction = 0.85;
+
     let isGrounded = true;
 
     const jumpForce = 0.35;
@@ -66,21 +71,51 @@ function createPlayer(scene, canvas) {
         forward.normalize();
         right.normalize();
 
+        let direction = BABYLON.Vector3.Zero();
+
         if (keys['w']) {
-            camera.position.addInPlace(forward.scale(speed));
+            direction.addInPlace(forward);
         }
 
         if (keys['s']) {
-            camera.position.addInPlace(forward.scale(-speed));
+            direction.subtractInPlace(forward);
         }
 
         if (keys['a']) {
-            camera.position.addInPlace(right.scale(-speed));
+            direction.subtractInPlace(right);
         }
 
         if (keys['d']) {
-            camera.position.addInPlace(right.scale(speed));
+            direction.addInPlace(right);
         }
+
+        if (direction.length() > 0) {
+            direction.normalize();
+
+            moveVelocity.x += direction.x * acceleration;
+            moveVelocity.z += direction.z * acceleration;
+        }
+
+        // Apply friction
+        moveVelocity.x *= friction;
+        moveVelocity.z *= friction;
+
+        // Limit speed
+        // Limit speed
+        const horizontalSpeed = Math.sqrt(
+            moveVelocity.x * moveVelocity.x + moveVelocity.z * moveVelocity.z,
+        );
+
+        const maxSpeed = keys['shift'] ? sprintSpeed : walkSpeed;
+
+        if (horizontalSpeed > maxSpeed) {
+            moveVelocity.x = (moveVelocity.x / horizontalSpeed) * maxSpeed;
+            moveVelocity.z = (moveVelocity.z / horizontalSpeed) * maxSpeed;
+        }
+
+        // Move player
+        camera.position.x += moveVelocity.x;
+        camera.position.z += moveVelocity.z;
 
         // Jump
         if (keys[' '] && isGrounded) {
