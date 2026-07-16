@@ -25,39 +25,27 @@ function createPlayer(scene, canvas) {
     // Mouse look
     camera.attachControl(canvas, false);
     // -------------------------
-    // Weapon (Prototype)
+    // Weapon
     // -------------------------
 
-    const weapon = BABYLON.MeshBuilder.CreateBox(
-        'weapon',
-        {
-            width: 0.25,
-            height: 0.18,
-            depth: 0.6,
-        },
-        scene,
+    let weapon = null;
+
+    const weaponDefaultPosition = new BABYLON.Vector3(
+        0.65,
+        -0.45,
+        2
     );
 
-    const weaponMaterial = new BABYLON.StandardMaterial('weaponMat', scene);
-
-    weaponMaterial.diffuseColor = new BABYLON.Color3(0.15, 0.15, 0.15);
-
-    weapon.material = weaponMaterial;
-
-    // Parent weapon to camera
-    weapon.parent = camera;
-
-    // Position relative to camera
-    weapon.position = new BABYLON.Vector3(0.35, -0.3, 0.75);
-    const weaponDefaultPosition = weapon.position.clone();
-
-    // Slight rotation
-    weapon.rotation = new BABYLON.Vector3(0.15, Math.PI, 0);
+    const weaponDefaultRotation = new BABYLON.Vector3(
+        BABYLON.Tools.ToRadians(0),
+        BABYLON.Tools.ToRadians(170),
+        BABYLON.Tools.ToRadians(0)
+    );
 
     const muzzleFlash = BABYLON.MeshBuilder.CreateSphere(
         'flash',
         {
-            diameter: 0.15,
+            diameter: 0.5,
             segments: 16,
         },
         scene,
@@ -69,11 +57,42 @@ function createPlayer(scene, canvas) {
 
     muzzleFlash.material = flashMaterial;
 
-    muzzleFlash.parent = weapon;
-
-    muzzleFlash.position = new BABYLON.Vector3(0, 0, -0.6);
-
     muzzleFlash.isVisible = false;
+
+    BABYLON.SceneLoader.ImportMesh(
+        "",
+        "assets/models/",
+        "Pistol.glb",
+        scene,
+        function (meshes) {
+
+            weapon = meshes[0];
+
+            weapon.parent = camera;
+
+            weapon.parent = camera;
+
+            weapon.position.copyFrom(weaponDefaultPosition);
+            weapon.rotation.copyFrom(weaponDefaultRotation);
+
+            weapon.scaling.set(0.4, 0.4, 0.4);
+
+            // Parent muzzle AFTER weapon exists
+            muzzleFlash.parent = weapon;
+
+            // Position relative to pistol
+            muzzleFlash.position.set(
+                0.8,   // left/right
+                0.7,   // up/down
+                1   // forward/back
+            );
+
+            console.log("Pistol Loaded");
+
+        }
+    );
+
+
 
     let recoil = 0;
     let weaponBobTime = 0;
@@ -167,16 +186,33 @@ function createPlayer(scene, canvas) {
         // Weapon Bob
         // -------------------------
 
-        if (moveVelocity.length() > 0.01) {
-            weaponBobTime += deltaTime * 10;
+        if (weapon) {
 
-            weapon.position.y = -0.3 + Math.sin(weaponBobTime) * 0.02;
+            if (moveVelocity.length() > 0.05) {
 
-            weapon.position.x = 0.35 + Math.cos(weaponBobTime * 0.5) * 0.02;
-        } else {
-            weapon.position.y = -0.3;
-            weapon.position.x = 0.35;
+                weaponBobTime += deltaTime * 9;
+
+                weapon.position.x =
+                    weaponDefaultPosition.x +
+                    Math.cos(weaponBobTime * 0.5) * 0.03;
+
+                weapon.position.y =
+                    weaponDefaultPosition.y +
+                    Math.abs(Math.sin(weaponBobTime)) * 0.025;
+
+                weapon.rotation.z =
+                    weaponDefaultRotation.z +
+                    Math.sin(weaponBobTime) * 0.02;
+
+            } else {
+
+                weapon.position.copyFrom(weaponDefaultPosition);
+                weapon.rotation.copyFrom(weaponDefaultRotation);
+
+            }
         }
+
+
 
         // Move player
         camera.cameraDirection.addInPlace(moveVelocity.scale(deltaTime));
@@ -204,9 +240,15 @@ function createPlayer(scene, canvas) {
         // Weapon Recoil
         // -------------------------
 
-        recoil *= 0.85;
+        recoil *= 0.82;
 
-        weapon.position.y = weaponDefaultPosition.y + recoil;
+        if (weapon) {
+            weapon.position.z =
+                weaponDefaultPosition.z + recoil;
+            weapon.rotation.x =
+                weaponDefaultRotation.x +
+                recoil * 0.3;
+        }
     });
 
     // -------------------------
